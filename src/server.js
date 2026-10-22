@@ -25,7 +25,7 @@ app.use("/api/instagram", instagramRoutes);
 
 app.use(notFound);
 app.use(errorHandler);
-
+app.set('trust proxy', 1);
 const port = process.env.PORT || 5000;
 mongoose.connect(process.env.MONGODB_URI)
   .then(() => app.listen(port, () => console.log(`API listening on ${port}`)))
