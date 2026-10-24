@@ -4,6 +4,7 @@ import rateLimit from 'express-rate-limit';
 import Customer from '../models/Customer.js';
 import Otp from '../models/Otp.js';
 import Booking from '../models/Booking.js';
+import Payment from '../models/Payment.js';
 import { sendOtpEmail } from '../utils/mailer.js';
 import { requireCustomer, signCustomerToken } from '../middleware/customerAuth.js';
 
@@ -119,6 +120,15 @@ router.get('/bookings', requireCustomer, async (req, res, next) => {
       $or: [{ paymentStatus: 'Paid' }, { paymentStatus: 'Pending', createdAt: { $gte: cutoff } }],
     }).populate('property', 'title locality city images rent listingType').sort({ preferredDate: -1, createdAt: -1 });
     res.json(bookings);
+  } catch (e) { next(e); }
+});
+
+// My payment history
+router.get('/payments', requireCustomer, async (req, res, next) => {
+  try {
+    res.json(await Payment.find({ customer: req.customer._id, status: 'paid' })
+      .populate({ path: 'booking', select: 'preferredDate preferredTime property', populate: { path: 'property', select: 'title' } })
+      .sort({ paidAt: -1 }));
   } catch (e) { next(e); }
 });
 

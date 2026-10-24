@@ -11,9 +11,12 @@ import testimonialRoutes from './routes/testimonials.js';
 import uploadRoutes from './routes/uploads.js';
 import statsRoutes from './routes/stats.js';
 import accountRoutes from './routes/account.js';
+import reelRoutes from './routes/reels.js';
+import quickRoutes from './routes/quick.js';
 import { notFound, errorHandler } from './middleware/errors.js';
 
 const app = express();
+app.set('trust proxy', 1); // behind Nginx: use the visitor's real IP for rate limits
 app.use(helmet());
 app.use(cors({ origin: process.env.FRONTEND_URL?.split(',') || 'http://localhost:5173' }));
 app.use(express.json({ limit: '2mb' }));
@@ -26,11 +29,15 @@ app.use('/api/testimonials', testimonialRoutes);
 app.use('/api/uploads', uploadRoutes);
 app.use('/api/stats', statsRoutes);
 app.use('/api/account', accountRoutes);
+app.use('/api/reels', reelRoutes);
+app.use('/api/quick', quickRoutes);
 // Public business contact details used by the WhatsApp / Call buttons
 app.get('/api/config', (_req, res) => res.json({
   whatsapp: (process.env.BUSINESS_WHATSAPP || '').replace(/\D/g, ''),
   phone: (process.env.BUSINESS_PHONE || '').trim(),
   fee: Number(process.env.SCHEDULING_FEE_INR) || 299,
+  singleFee: Number(process.env.SINGLE_VISIT_FEE_INR) || 149,
+  quickFee: Number(process.env.QUICK_PAY_FEE_INR) || 99,
 }));
 app.use(notFound);
 app.use(errorHandler);

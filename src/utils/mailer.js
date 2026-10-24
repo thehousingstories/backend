@@ -29,7 +29,7 @@ export async function sendOtpEmail(to, code, purpose) {
   await transport().sendMail({
     from: process.env.MAIL_FROM || `The Housing Stories <${process.env.SMTP_USER}>`,
     to,
-    subject: `${code} is your The Housing Stories code`,
+    subject: 'Your Housing Stories verification code',
     text: `Your code to ${action} is ${code}. It expires in 10 minutes. If you didn't request this, you can ignore this email.`,
     html: `<div style="font-family:Arial,sans-serif;max-width:460px;margin:auto;padding:28px;border:1px solid #eadfce;border-radius:16px;background:#fffaf2">
       <h2 style="margin:0 0 6px;color:#0a3d44">The Housing Stories</h2>

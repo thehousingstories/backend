@@ -9,8 +9,10 @@ const bookingSchema = new mongoose.Schema({
   preferredDate: { type: Date, required: true },
   preferredTime: { type: String, required: true },
   note: { type: String, maxlength: 1000, default: '' },
-  // 'Pending' = waiting for the one-time scheduling payment,
-  // 'Paid'    = customer's one-time pass is active.
+  // 'pass'   = covered by the unlimited visit pass (no extra payment)
+  // 'single' = paid for this one property visit
+  plan: { type: String, enum: ['pass', 'single'], default: 'pass' },
+  amountPaid: { type: Number, default: 0 },
   paymentStatus: { type: String, enum: ['Pending', 'Paid', 'Failed'], default: 'Pending' },
   bookingStatus: { type: String, enum: ['Requested', 'Confirmed', 'Completed', 'Cancelled'], default: 'Requested' },
 }, { timestamps: true });
